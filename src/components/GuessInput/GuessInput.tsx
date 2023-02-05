@@ -9,8 +9,6 @@ type Props = {
   commitGuess: (word: string) => void;
 };
 
-const guessMatcher = /^[A-Z]{5}$/i;
-
 export default function GuessInput({ board, gameOver, commitGuess }: Props) {
   const [currentGuess, setCurrentGuess] = useState("");
   const [guessHistory, setGuessHistory] = useState<string[]>([]);
@@ -49,7 +47,7 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         type="text"
         required
         maxLength={5}
-        pattern={guessMatcher.source}
+        pattern="[A-Z]{5}"
         title="Word must have five letters exactly"
         value={currentGuess}
         autoComplete="off"
