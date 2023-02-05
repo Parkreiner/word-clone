@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Board } from "../../sharedTypes";
 import Keyboard from "../Keyboard/";
+import VisuallyHidden from "../VisuallyHidden";
 
 type Props = {
   board: Board;
@@ -21,9 +22,10 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
   };
 
   const backspace = () => {
-    setCurrentGuess((currentGuess) =>
-      currentGuess.slice(0, currentGuess.length - 1)
-    );
+    setCurrentGuess((currentGuess) => {
+      if (currentGuess.length === 0) return currentGuess;
+      return currentGuess.slice(0, currentGuess.length - 1);
+    });
   };
 
   return (
@@ -44,9 +46,21 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         pattern={guessMatcher.source}
         title="Text input must have five letters exactly"
         value={currentGuess}
+        autoComplete="off"
         onChange={(e) => setCurrentGuess(e.target.value.toUpperCase())}
         disabled={gameOver}
       />
+
+      {/*
+        The <Keyboard> component has a submit button, meaning that it overrides
+        all other elements in the form and prevents non-submit elements from
+        being able to submit or trigger form validation. Need to add invisible
+        submit <input> for keyboard access and general acccessibility.
+      */}
+      <VisuallyHidden type="block">
+        <label htmlFor="guess-submit">Submit guess</label>
+        <input id="guess-submit" type="submit" />
+      </VisuallyHidden>
 
       <Keyboard
         board={board}

@@ -41,7 +41,7 @@ export default function Game() {
   console.info({ answer });
 
   const commitGuess = (newGuess: string) => {
-    if (gameOver) return;
+    if (gameOver || newGuess.length !== 5) return;
 
     const comparisonResults = checkGuess(newGuess, answer);
     const boardCopy = board.map((word, index) => {

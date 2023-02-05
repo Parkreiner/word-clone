@@ -31,7 +31,7 @@ export default function Keyboard({
     })
   );
 
-  const toLetterKeys = (letter: string, letterIndex: number) => {
+  const toLetterKey = (letter: string, letterIndex: number) => {
     const keyStatus = lettersMap.get(letter) ?? "empty";
     return (
       <button
@@ -47,8 +47,8 @@ export default function Keyboard({
 
   return (
     <div className={styles.keyboard}>
-      <div className={styles.keyboardRow}>{row1.map(toLetterKeys)}</div>
-      <div className={styles.keyboardRow}>{row2.map(toLetterKeys)}</div>
+      <div className={styles.keyboardRow}>{row1.map(toLetterKey)}</div>
+      <div className={styles.keyboardRow}>{row2.map(toLetterKey)}</div>
 
       <div className={styles.keyboardRow}>
         <button
@@ -60,7 +60,7 @@ export default function Keyboard({
           Back
         </button>
 
-        {row3.map(toLetterKeys)}
+        {row3.map(toLetterKey)}
 
         <button
           type="submit"
