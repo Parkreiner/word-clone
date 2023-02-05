@@ -9,8 +9,9 @@ import { checkGuess } from "../../game-helpers";
 
 import GuessInput from "../GuessInput";
 import BoardDisplay from "../BoardDisplay";
-import GameOverBanner from "../GameOverBanner";
 import ResetButton from "../ResetButton";
+import WinBanner from "../WinBanner";
+import LoseBanner from "../LoseBanner";
 
 function getAnswer(words: readonly string[]) {
   const answer = sample(words);
@@ -34,9 +35,12 @@ export default function Game() {
   const [answer, setAnswer] = useState(initialAnswer);
   const [board, setBoard] = useState(initialBoard);
   const [guessIndex, setGuessIndex] = useState(0);
-  const [userWins, setUserWins] = useState(false);
 
+  const userWins = board.some((word) =>
+    word.every(({ status }) => status === "correct")
+  );
   const gameOver = userWins || guessIndex >= NUM_OF_GUESSES_ALLOWED;
+
   console.info({ answer });
 
   const commitGuess = (newGuess: string) => {
@@ -50,14 +54,12 @@ export default function Game() {
 
     setBoard(boardCopy);
     setGuessIndex(guessIndex + 1);
-    setUserWins(comparisonResults.every(({ status }) => status === "correct"));
   };
 
   const resetGame = () => {
     setAnswer(getAnswer(WORDS));
     setBoard(initialBoard);
     setGuessIndex(0);
-    setUserWins(false);
   };
 
   return (
@@ -66,13 +68,12 @@ export default function Game() {
       <BoardDisplay board={board} />
       <GuessInput gameOver={gameOver} commitGuess={commitGuess} board={board} />
 
-      {gameOver && (
-        <GameOverBanner
-          answer={answer}
-          userWins={userWins}
-          guessesUsed={guessIndex}
-        />
-      )}
+      {gameOver &&
+        (userWins ? (
+          <WinBanner guessesUsed={guessIndex} />
+        ) : (
+          <LoseBanner answer={answer} />
+        ))}
     </>
   );
 }
