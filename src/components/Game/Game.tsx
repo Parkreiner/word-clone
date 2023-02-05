@@ -37,7 +37,6 @@ export default function Game() {
   const [userWins, setUserWins] = useState(false);
 
   const gameOver = userWins || guessIndex >= NUM_OF_GUESSES_ALLOWED;
-
   console.info({ answer });
 
   const commitGuess = (newGuess: string) => {

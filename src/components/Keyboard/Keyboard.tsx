@@ -15,9 +15,9 @@ const statusStyles = {
   empty: "",
 } as const satisfies Record<Status, string | undefined>;
 
-const row1 = "QWERTYUIOP".split("");
-const row2 = "ASDFGHJKL".split("");
-const row3 = "ZXCVBNM".split("");
+const row1: readonly string[] = "QWERTYUIOP".split("");
+const row2: readonly string[] = "ASDFGHJKL".split("");
+const row3: readonly string[] = "ZXCVBNM".split("");
 
 export default function Keyboard({
   board,
@@ -25,18 +25,20 @@ export default function Keyboard({
   processLetter,
   backspace,
 }: Props) {
-  const lettersMap = new Map(
+  const letterStatuses = new Map(
     board.flatMap((row) => {
       return row.map((letter) => [letter.value, letter.status]);
     })
   );
 
   const toLetterKey = (letter: string, letterIndex: number) => {
-    const keyStatus = lettersMap.get(letter) ?? "empty";
+    const letterStatus = letterStatuses.get(letter) ?? "empty";
+    const statusStyle = statusStyles[letterStatus] ?? "";
+
     return (
       <button
         key={letterIndex}
-        className={`${styles.keyboardCell} ${styles.keyboardCellLetter} ${statusStyles[keyStatus]}`}
+        className={`${styles.keyboardCell} ${styles.keyboardCellLetter} ${statusStyle}`}
         type="button"
         onClick={() => processLetter(letter)}
       >

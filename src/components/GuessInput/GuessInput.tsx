@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Board } from "../../sharedTypes";
 import Keyboard from "../Keyboard/";
 import VisuallyHidden from "../VisuallyHidden";
@@ -13,19 +13,21 @@ const guessMatcher = /^[A-Z]{5}$/i;
 
 export default function GuessInput({ board, gameOver, commitGuess }: Props) {
   const [currentGuess, setCurrentGuess] = useState("");
+  const [guessHistory, setGuessHistory] = useState<string[]>([]);
+  const guessInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    guessInputRef.current?.focus();
+  }, [guessHistory]);
 
   const processLetter = (letter: string) => {
-    setCurrentGuess((currentGuess) => {
-      if (currentGuess.length >= 5) return currentGuess;
-      return `${currentGuess}${letter}`;
-    });
+    if (currentGuess.length >= 5) return;
+    setCurrentGuess(`${currentGuess}${letter}`);
   };
 
   const backspace = () => {
-    setCurrentGuess((currentGuess) => {
-      if (currentGuess.length === 0) return currentGuess;
-      return currentGuess.slice(0, currentGuess.length - 1);
-    });
+    if (currentGuess.length === 0) return;
+    setCurrentGuess(currentGuess.slice(0, currentGuess.length - 1));
   };
 
   return (
@@ -33,13 +35,18 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
       className="guess-input-wrapper"
       onSubmit={(e) => {
         e.preventDefault();
-        commitGuess(currentGuess);
+        if (!guessHistory.includes(currentGuess)) {
+          commitGuess(currentGuess);
+          setGuessHistory([...guessHistory, currentGuess]);
+        }
+
         setCurrentGuess("");
       }}
     >
       <label htmlFor="guess-input">Enter guess:</label>
       <input
         id="guess-input"
+        ref={guessInputRef}
         type="text"
         required
         maxLength={5}
@@ -59,7 +66,12 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
       */}
       <VisuallyHidden type="block">
         <label htmlFor="guess-submit">Submit guess</label>
-        <input id="guess-submit" type="submit" disabled={gameOver} />
+        <input
+          id="guess-submit"
+          type="submit"
+          disabled={gameOver}
+          tabIndex={-1}
+        />
       </VisuallyHidden>
 
       <Keyboard
