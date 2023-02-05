@@ -1,0 +1,53 @@
+.keyboard {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  row-gap: 1rem;
+  margin: 1rem 0 2rem;
+  font-size: 1.4rem;
+}
+
+.keyboardRow {
+  display: flex;
+  flex-flow: row nowrap;
+  column-gap: 16px;
+}
+
+.keyboardCell {
+  background-color: #eee;
+  border-radius: 8px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.keyboardCellLetter {
+  width: 50px;
+}
+
+.keyboardCellControl {
+  width: 100px;
+}
+
+.keyboardCell:disabled {
+  cursor: not-allowed;
+}
+
+.correct {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.incorrect {
+  background: var(--color-gray-300);
+  border-color: var(--color-gray-300);
+  color: white;
+}
+
+.misplaced {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+  color: white;
+}

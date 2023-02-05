@@ -1,0 +1,14 @@
+.buttonContainer {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resetButton {
+  background-color: #eee;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px 24px;
+  border-radius: 8px;
+}
