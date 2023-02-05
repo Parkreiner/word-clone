@@ -44,7 +44,7 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         required
         maxLength={5}
         pattern={guessMatcher.source}
-        title="Text input must have five letters exactly"
+        title="Word must have five letters exactly"
         value={currentGuess}
         autoComplete="off"
         onChange={(e) => setCurrentGuess(e.target.value.toUpperCase())}
@@ -55,11 +55,11 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         The <Keyboard> component has a submit button, meaning that it overrides
         all other elements in the form and prevents non-submit elements from
         being able to submit or trigger form validation. Need to add invisible
-        submit <input> for keyboard access and general acccessibility.
+        submit <input> for non-mouse interactivity/general acccessibility.
       */}
       <VisuallyHidden type="block">
         <label htmlFor="guess-submit">Submit guess</label>
-        <input id="guess-submit" type="submit" />
+        <input id="guess-submit" type="submit" disabled={gameOver} />
       </VisuallyHidden>
 
       <Keyboard

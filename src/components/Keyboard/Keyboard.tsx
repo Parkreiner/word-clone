@@ -62,10 +62,13 @@ export default function Keyboard({
 
         {row3.map(toLetterKey)}
 
+        {/*
+          Could add disabled attribute, but I think it's better feedback to send
+          an invalid submit request and trigger the form validation message.
+        */}
         <button
           type="submit"
           className={`${styles.keyboardCell} ${styles.keyboardCellControl}`}
-          disabled={currentGuess.length < 5}
         >
           Enter
         </button>
