@@ -6,7 +6,6 @@ type Props = {
   currentGuess: string;
   processLetter: (letter: string) => void;
   backspace: () => void;
-  enter: () => void;
 };
 
 const statusStyles = {
@@ -25,7 +24,6 @@ export default function Keyboard({
   currentGuess,
   processLetter,
   backspace,
-  enter,
 }: Props) {
   const lettersMap = new Map(
     board.flatMap((row) => {
@@ -65,9 +63,8 @@ export default function Keyboard({
         {row3.map(toLetterKeys)}
 
         <button
-          type="button"
+          type="submit"
           className={`${styles.keyboardCell} ${styles.keyboardCellControl}`}
-          onClick={enter}
           disabled={currentGuess.length < 5}
         >
           Enter

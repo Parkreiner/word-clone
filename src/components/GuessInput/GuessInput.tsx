@@ -26,17 +26,13 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
     );
   };
 
-  const enterGuess = () => {
-    commitGuess(currentGuess);
-    setCurrentGuess("");
-  };
-
   return (
     <form
       className="guess-input-wrapper"
       onSubmit={(e) => {
         e.preventDefault();
-        enterGuess();
+        commitGuess(currentGuess);
+        setCurrentGuess("");
       }}
     >
       <label htmlFor="guess-input">Enter guess:</label>
@@ -46,9 +42,10 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         required
         maxLength={5}
         pattern={guessMatcher.source}
-        disabled={gameOver}
+        title="Text input must have five letters exactly"
         value={currentGuess}
         onChange={(e) => setCurrentGuess(e.target.value.toUpperCase())}
+        disabled={gameOver}
       />
 
       <Keyboard
@@ -56,7 +53,6 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         currentGuess={currentGuess}
         processLetter={processLetter}
         backspace={backspace}
-        enter={enterGuess}
       />
     </form>
   );
