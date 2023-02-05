@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Board } from "../../sharedTypes";
-import Keyboard from "../Keyboard/";
+import OnScreenKeyboard from "../OnScreenKeyboard";
 import VisuallyHidden from "../VisuallyHidden";
 
 type Props = {
@@ -16,9 +16,9 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
   const [guessHistory, setGuessHistory] = useState<string[]>([]);
   const guessInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     guessInputRef.current?.focus();
-  }, [guessHistory]);
+  }, [guessHistory.length]);
 
   const processLetter = (letter: string) => {
     if (currentGuess.length >= 5) return;
@@ -30,19 +30,18 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
     setCurrentGuess(currentGuess.slice(0, currentGuess.length - 1));
   };
 
-  return (
-    <form
-      className="guess-input-wrapper"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!guessHistory.includes(currentGuess)) {
-          commitGuess(currentGuess);
-          setGuessHistory([...guessHistory, currentGuess]);
-        }
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!guessHistory.includes(currentGuess)) {
+      commitGuess(currentGuess);
+      setGuessHistory([...guessHistory, currentGuess]);
+    }
 
-        setCurrentGuess("");
-      }}
-    >
+    setCurrentGuess("");
+  };
+
+  return (
+    <form className="guess-input-wrapper" onSubmit={submit}>
       <label htmlFor="guess-input">Enter guess:</label>
       <input
         id="guess-input"
@@ -74,7 +73,7 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
         />
       </VisuallyHidden>
 
-      <Keyboard
+      <OnScreenKeyboard
         board={board}
         currentGuess={currentGuess}
         processLetter={processLetter}

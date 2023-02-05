@@ -19,7 +19,7 @@ const row1: readonly string[] = "QWERTYUIOP".split("");
 const row2: readonly string[] = "ASDFGHJKL".split("");
 const row3: readonly string[] = "ZXCVBNM".split("");
 
-export default function Keyboard({
+export default function OnScreenKeyboard({
   board,
   currentGuess,
   processLetter,
