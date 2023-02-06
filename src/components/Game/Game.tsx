@@ -23,17 +23,15 @@ function getAnswer(words: readonly string[]) {
 }
 
 const initialAnswer = getAnswer(WORDS);
-const initialBoard: Board = new Array(NUM_OF_GUESSES_ALLOWED)
-  .fill(null)
-  .map(() =>
-    new Array(5).fill(5).map(() => {
-      return { status: "empty", value: "" };
-    })
-  );
+const initialBoard = new Array(NUM_OF_GUESSES_ALLOWED).fill(null).map(() => {
+  return new Array(5).fill(null).map(() => {
+    return { status: "empty", value: "" } as const;
+  });
+});
 
 export default function Game() {
   const [answer, setAnswer] = useState(initialAnswer);
-  const [board, setBoard] = useState(initialBoard);
+  const [board, setBoard] = useState<Board>(initialBoard);
   const [guessIndex, setGuessIndex] = useState(0);
 
   const userWins = board.some((word) =>

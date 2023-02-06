@@ -1,9 +1,9 @@
-import type { Board, NonEmptyStatus, Status } from "../../sharedTypes";
+import type { NonEmptyStatus, Status } from "../../sharedTypes";
 import styles from "./Keyboard.module.css";
 
 type Props = {
-  board: Board;
-  currentGuess: string;
+  letterStatuses: Map<string, NonEmptyStatus>;
+  backspaceEnabled: boolean;
   processLetter: (letter: string) => void;
   backspace: () => void;
 };
@@ -21,46 +21,12 @@ const row1: readonly string[] = "QWERTYUIOP".split("");
 const row2: readonly string[] = "ASDFGHJKL".split("");
 const row3: readonly string[] = "ZXCVBNM".split("");
 
-const statusSpecificity = {
-  correct: 2,
-  misplaced: 1,
-  incorrect: 0,
-} as const satisfies Record<NonEmptyStatus, number>;
-
-function getLetterStatuses(board: Board): Map<string, NonEmptyStatus> {
-  const letterStatuses = new Map<string, NonEmptyStatus>();
-
-  for (const word of board) {
-    for (const letter of word) {
-      if (letter.status === "empty") {
-        break;
-      }
-
-      const prevStatus = letterStatuses.get(letter.value);
-      if (prevStatus === undefined) {
-        letterStatuses.set(letter.value, letter.status);
-        continue;
-      }
-
-      const newSpec = statusSpecificity[letter.status];
-      const oldSpec = statusSpecificity[prevStatus];
-      if (newSpec > oldSpec) {
-        letterStatuses.set(letter.value, letter.status);
-      }
-    }
-  }
-
-  return letterStatuses;
-}
-
 export default function OnScreenKeyboard({
-  board,
-  currentGuess,
+  letterStatuses,
+  backspaceEnabled,
   processLetter,
   backspace,
 }: Props) {
-  const letterStatuses = getLetterStatuses(board);
-
   const toLetterKey = (letter: string, letterIndex: number) => {
     const letterStatus = letterStatuses.get(letter) ?? "empty";
     const statusStyle = statusStyles[letterStatus] ?? "";
@@ -87,7 +53,7 @@ export default function OnScreenKeyboard({
           type="button"
           className={`${styles.keyboardCell} ${styles.keyboardCellControl}`}
           onClick={backspace}
-          disabled={currentGuess.length === 0}
+          disabled={!backspaceEnabled}
         >
           Back
         </button>

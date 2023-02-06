@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { Board } from "../../sharedTypes";
+import { Board, NonEmptyStatus } from "../../sharedTypes";
 import OnScreenKeyboard from "../OnScreenKeyboard";
 import VisuallyHidden from "../VisuallyHidden";
 
@@ -9,10 +9,43 @@ type Props = {
   commitGuess: (word: string) => void;
 };
 
+const statusSpecificity = {
+  correct: 2,
+  misplaced: 1,
+  incorrect: 0,
+} as const satisfies Record<NonEmptyStatus, number>;
+
+function getLetterStatuses(board: Board): Map<string, NonEmptyStatus> {
+  const letterStatuses = new Map<string, NonEmptyStatus>();
+
+  for (const word of board) {
+    for (const letter of word) {
+      if (letter.status === "empty") {
+        break;
+      }
+
+      const prevStatus = letterStatuses.get(letter.value);
+      if (prevStatus === undefined) {
+        letterStatuses.set(letter.value, letter.status);
+        continue;
+      }
+
+      const newSpec = statusSpecificity[letter.status];
+      const oldSpec = statusSpecificity[prevStatus];
+      if (newSpec > oldSpec) {
+        letterStatuses.set(letter.value, letter.status);
+      }
+    }
+  }
+
+  return letterStatuses;
+}
+
 export default function GuessInput({ board, gameOver, commitGuess }: Props) {
   const [currentGuess, setCurrentGuess] = useState("");
   const [guessHistory, setGuessHistory] = useState<string[]>([]);
   const guessInputRef = useRef<HTMLInputElement>(null);
+  const letterStatuses = getLetterStatuses(board);
 
   useLayoutEffect(() => {
     guessInputRef.current?.focus();
@@ -72,8 +105,8 @@ export default function GuessInput({ board, gameOver, commitGuess }: Props) {
       </VisuallyHidden>
 
       <OnScreenKeyboard
-        board={board}
-        currentGuess={currentGuess}
+        letterStatuses={letterStatuses}
+        backspaceEnabled={currentGuess.length > 0}
         processLetter={processLetter}
         backspace={backspace}
       />
